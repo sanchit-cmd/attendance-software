@@ -14,7 +14,7 @@ class SubjectAdmin(admin.ModelAdmin):
 class TeacherAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "subject", "user")
     search_fields = ("name", "user__phone", "subject__name")
-    autocomplete_fields = ("user",)
+    autocomplete_fields = ("user", "subject")
 
 
 admin.site.register(Subject, SubjectAdmin)
