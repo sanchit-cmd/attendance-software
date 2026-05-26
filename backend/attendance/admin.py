@@ -12,7 +12,11 @@ class AttendanceInline(admin.TabularInline):
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ("enrollment", "attendance_date", "is_present", "attendance_batch")
     list_filter = ("is_present", "attendance_date", "attendance_batch")
-    search_fields = ("enrollment__student__name", "enrollment__subject__name")
+    search_fields = (
+        "enrollment__student__name",
+        "enrollment__subject__name",
+        "enrollment__student__user__phone",
+    )
     date_hierarchy = "attendance_date"
     ordering = ("-attendance_date",)
 
