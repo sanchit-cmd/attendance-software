@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Dashboard
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{ user.name }}!</h1>
+<p>This is your student dashboard.</p>
+
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+<br />
+
+{% for student in students %}
+<div>{{ student.name }}</div>
+<div>{{ student.date_of_birth }}</div>
+{% endfor %}
+
+{% else %}
+<p>
+  Please
+  <a href="{% url 'login' %}">login</a>
+  to view your dashboard.
+</p>
+{% endif %}
+{% endblock %}

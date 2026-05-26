@@ -7,12 +7,12 @@ from accounts.models import UserRole
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("name",)
     search_fields = ("name",)
 
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "subject", "user")
+    list_display = ("name", "subject", "user")
     search_fields = ("name", "user__phone", "subject__name")
     autocomplete_fields = ("user", "subject")
 

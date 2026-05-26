@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "core",
     "accounts",
     "enrollments",
+    "attendance",
     "students",
     "classes",
 ]
