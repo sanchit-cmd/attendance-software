@@ -6,7 +6,7 @@ from .models import Student
 
 # Create your views here.
 def is_student(user):
-    return user.is_authenticated and user.students.exists()
+    return user.is_authenticated and user.role == "STUDENT"
 
 
 @user_passes_test(is_student)

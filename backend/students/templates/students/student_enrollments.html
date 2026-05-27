@@ -1,138 +1,141 @@
 {% extends "base.html" %}
 
 {% block title %}
-Student Dashboard
+Student Enrollments - TSM MG
 {% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-<h1>Welcome, {{ user.name }}!</h1>
-<p>This is your student dashboard.</p>
+<div class="row mb-4 align-items-center">
+  <div class="col-md-8">
+    <h2 class="fw-bold mb-1">Student Enrollments</h2>
+    <p class="text-muted mb-0">View all active and inactive enrollments for {{ student.name }}</p>
+  </div>
+  <div class="col-md-4 mt-3 mt-md-0 text-md-end">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded-3">
+      <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+</div>
 
-<form action="{% url 'logout' %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Logout</button>
-</form>
+<div class="card border-0 shadow-sm rounded-4 mb-5">
+  <div class="card-body p-4 d-flex align-items-center">
+    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-4">
+      <i class="bi bi-person-lines-fill fs-2 text-primary"></i>
+    </div>
+    <div>
+      <h4 class="fw-bold mb-1">{{ student.name }}</h4>
+      <p class="text-muted mb-0"><i class="bi bi-calendar-event me-2"></i>Date of Birth: {{ student.date_of_birth }}</p>
+    </div>
+  </div>
+</div>
 
-<br />
-
-<h2>Student Details</h2>
-<div>Name: {{ student.name }}</div>
-<div>Date of Birth: {{ student.date_of_birth }}</div>
-
-<br />
-
-<h2>Active Enrollments</h2>
+<h4 class="fw-bold mb-3"><i class="bi bi-journal-check me-2 text-success"></i>Active Enrollments</h4>
 {% if active_enrollments %}
-<div style="display: grid; gap: 15px">
+<div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
   {% for enrollment in active_enrollments %}
-  <a href="{% url 'enrollment_detail' student.id enrollment.id %}" style="text-decoration: none; color: inherit">
-    <div
-      style="
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      "
-      onmouseover="this.style.backgroundColor = '#f5f5f5'"
-      onmouseout="this.style.backgroundColor = 'white'"
-    >
-      <div
-        style="
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-          gap: 10px;
-        "
-      >
-        <div>
-          <strong>Subject:</strong>
-          {{ enrollment.subject }}
-        </div>
-        <div>
-          <strong>Start Date:</strong>
-          {{ enrollment.start_date }}
-        </div>
-        <div>
-          <strong>End Date:</strong>
-          {{ enrollment.end_date }}
-        </div>
-        <div>
-          <strong>Total Classes:</strong>
-          {{ enrollment.total_classes }}
-        </div>
-        <div>
-          <strong>Status:</strong>
-          {{ enrollment.status }}
+  <div class="col">
+    <a href="{% url 'enrollment_detail' student.id enrollment.id %}" class="text-decoration-none">
+      <div class="card h-100 border-0 shadow-sm rounded-4 card-hover">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">{{ enrollment.subject }}</h5>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+              {{ enrollment.status }}
+            </span>
+          </div>
+          
+          <div class="row g-2 mb-0 text-muted small bg-body-tertiary p-3 rounded-3">
+            <div class="col-6">
+              <i class="bi bi-calendar-check me-1 text-success"></i>
+              <strong>Start:</strong> <br/>{{ enrollment.start_date }}
+            </div>
+            <div class="col-6">
+              <i class="bi bi-calendar-x me-1 text-danger"></i>
+              <strong>End:</strong> <br/>{{ enrollment.end_date }}
+            </div>
+            <div class="col-12 mt-2 pt-2 border-top">
+              <i class="bi bi-list-ol me-1 text-primary"></i>
+              <strong>Total Classes:</strong> {{ enrollment.total_classes }}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </a>
+    </a>
+  </div>
   {% endfor %}
 </div>
 {% else %}
-<p>No active enrollments.</p>
+<div class="alert alert-info rounded-4 border-0 mb-5 py-4 d-flex align-items-center">
+  <i class="bi bi-info-circle fs-3 me-3"></i>
+  <div>
+    <h6 class="fw-bold mb-0">No active enrollments</h6>
+    <small>This student is not currently enrolled in any active classes.</small>
+  </div>
+</div>
 {% endif %}
 
-<br />
-<h2>Inactive Enrollments</h2>
 
+<h4 class="fw-bold mb-3"><i class="bi bi-journal-x me-2 text-secondary"></i>Inactive Enrollments</h4>
 {% if inactive_enrollments %}
-<div style="display: grid; gap: 15px">
+<div class="row row-cols-1 row-cols-md-2 g-4">
   {% for enrollment in inactive_enrollments %}
-  <a href="{% url 'enrollment_detail' student.id enrollment.id %}" style="text-decoration: none; color: inherit">
-    <div
-      style="
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      "
-      onmouseover="this.style.backgroundColor = '#f5f5f5'"
-      onmouseout="this.style.backgroundColor = 'white'"
-    >
-      <div
-        style="
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-          gap: 10px;
-        "
-      >
-        <div>
-          <strong>Subject:</strong>
-          {{ enrollment.subject }}
-        </div>
-        <div>
-          <strong>Start Date:</strong>
-          {{ enrollment.start_date }}
-        </div>
-        <div>
-          <strong>End Date:</strong>
-          {{ enrollment.end_date }}
-        </div>
-        <div>
-          <strong>Total Classes:</strong>
-          {{ enrollment.total_classes }}
-        </div>
-        <div>
-          <strong>Status:</strong>
-          {{ enrollment.status }}
+  <div class="col">
+    <a href="{% url 'enrollment_detail' student.id enrollment.id %}" class="text-decoration-none opacity-75">
+      <div class="card h-100 border-0 shadow-sm rounded-4 card-hover">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">{{ enrollment.subject }}</h5>
+            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-pill">
+              {{ enrollment.status }}
+            </span>
+          </div>
+          
+          <div class="row g-2 mb-0 text-muted small bg-body-tertiary p-3 rounded-3">
+            <div class="col-6">
+              <i class="bi bi-calendar-check me-1"></i>
+              <strong>Start:</strong> <br/>{{ enrollment.start_date }}
+            </div>
+            <div class="col-6">
+              <i class="bi bi-calendar-x me-1"></i>
+              <strong>End:</strong> <br/>{{ enrollment.end_date }}
+            </div>
+            <div class="col-12 mt-2 pt-2 border-top">
+              <i class="bi bi-list-ol me-1"></i>
+              <strong>Total Classes:</strong> {{ enrollment.total_classes }}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </a>
+    </a>
+  </div>
   {% endfor %}
 </div>
 {% else %}
-<p>No inactive enrollments.</p>
+<div class="alert alert-light rounded-4 border mb-5 py-4 d-flex align-items-center">
+  <i class="bi bi-info-circle text-muted fs-3 me-3"></i>
+  <div class="text-muted">
+    <h6 class="fw-bold mb-0">No inactive enrollments</h6>
+    <small>There is no past enrollment history.</small>
+  </div>
+</div>
 {% endif %}
 
 {% else %}
-<p>
-  Please
-  <a href="{% url 'login' %}">login</a>
-  to view your dashboard.
-</p>
+<div class="text-center py-5">
+  <div class="card p-5 mx-auto border-0 shadow-sm rounded-4" style="max-width: 500px;">
+    <i class="bi bi-lock fs-1 text-muted mb-3"></i>
+    <h4 class="fw-bold">Access Denied</h4>
+    <p class="text-muted mb-4">Please login to view your enrollments.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg rounded-3">Login Now</a>
+  </div>
+</div>
 {% endif %}
+
+<style>
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  }
+</style>
 {% endblock %}

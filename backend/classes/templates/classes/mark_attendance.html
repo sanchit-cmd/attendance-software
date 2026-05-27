@@ -1,106 +1,91 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Mark Attendance
+Mark Attendance - TSM MG
 {% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-<h1>Welcome, {{ user.name }}!</h1>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+      <div class="card-header bg-primary text-white p-4 border-0">
+        <h4 class="fw-bold mb-0">Mark Attendance</h4>
+      </div>
+      
+      <div class="card-body p-4 p-md-5">
+        <div class="bg-body-tertiary p-3 rounded-3 mb-4 border border-secondary-subtle">
+          <div class="row g-2 small">
+            <div class="col-sm-6">
+              <span class="text-muted"><i class="bi bi-person me-1"></i>Student:</span><br>
+              <strong class="fs-6">{{ enrollment.student.name }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted"><i class="bi bi-book me-1"></i>Subject:</span><br>
+              <strong class="fs-6">{{ enrollment.subject }}</strong>
+            </div>
+            <div class="col-12 mt-2">
+              <span class="text-muted"><i class="bi bi-info-circle me-1"></i>Status:</span>
+              <span class="badge {% if enrollment.status == 'ACTIVE' %}bg-success{% else %}bg-secondary{% endif %} ms-2">
+                {{ enrollment.status }}
+              </span>
+            </div>
+          </div>
+        </div>
 
-<form action="{% url 'logout' %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Logout</button>
-</form>
+        <form action="{% url 'mark_attendance' enrollment.id %}" method="post">
+          {% csrf_token %}
 
-<br />
+          <div class="mb-4">
+            <label for="attendance_date" class="form-label fw-bold">Attendance Date</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+              <input type="date" class="form-control form-control-lg" id="attendance_date" name="attendance_date" required />
+            </div>
+          </div>
 
-<h2>Mark Attendance</h2>
+          <div class="mb-4">
+            <label for="attendance_batch" class="form-label fw-bold">Batch (Time Slot)</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-clock"></i></span>
+              <select class="form-select form-select-lg" id="attendance_batch" name="attendance_batch" required>
+                <option value="">-- Select Batch --</option>
+                {% for value, label in batch_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
 
-<div
-  style="
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 600px;
-  "
->
-  <div style="margin-bottom: 15px">
-    <p>
-      <strong>Student:</strong>
-      {{ enrollment.student.name }}
-    </p>
-    <p>
-      <strong>Subject:</strong>
-      {{ enrollment.subject }}
-    </p>
-    <p>
-      <strong>Enrollment Status:</strong>
-      {{ enrollment.status }}
-    </p>
+          <div class="mb-5">
+            <div class="form-check form-switch fs-4">
+              <input class="form-check-input" type="checkbox" role="switch" id="is_present" name="is_present" checked />
+              <label class="form-check-label ms-2" for="is_present">Mark as Present</label>
+            </div>
+          </div>
+
+          <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+            <a href="{% url 'search_student_for_attendance' %}" class="btn btn-light btn-lg px-4 border">
+              Cancel
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg px-5">
+              <i class="bi bi-check2-circle me-2"></i>Save Record
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-
-  <form action="{% url 'mark_attendance' enrollment.id %}" method="post">
-    {% csrf_token %}
-
-    <div style="margin-bottom: 15px">
-      <label for="attendance_date"><strong>Attendance Date:</strong></label>
-      <input type="date" id="attendance_date" name="attendance_date" required />
-    </div>
-
-    <div style="margin-bottom: 15px">
-      <label for="attendance_batch"><strong>Batch (Time Slot):</strong></label>
-      <select id="attendance_batch" name="attendance_batch" required>
-        <option value="">-- Select Batch --</option>
-        {% for value, label in batch_choices %}
-        <option value="{{ value }}">{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div style="margin-bottom: 15px">
-      <label for="is_present">
-        <input type="checkbox" id="is_present" name="is_present" checked />
-        <strong>Mark as Present</strong>
-      </label>
-    </div>
-
-    <div style="display: flex; gap: 10px">
-      <button
-        type="submit"
-        style="
-          padding: 10px 20px;
-          background-color: #4caf50;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        "
-      >
-        Mark Attendance
-      </button>
-      <a
-        href="{% url 'search_student_for_attendance' %}"
-        style="
-          padding: 10px 20px;
-          background-color: #2196f3;
-          color: white;
-          text-decoration: none;
-          border-radius: 4px;
-          display: inline-block;
-        "
-      >
-        Back to Search
-      </a>
-    </div>
-  </form>
 </div>
 
 {% else %}
-<p>
-  Please
-  <a href="{% url 'login' %}">login</a>
-  to access this page.
-</p>
+<div class="text-center py-5">
+  <div class="card p-5 mx-auto border-0 shadow-sm rounded-4" style="max-width: 500px;">
+    <i class="bi bi-lock fs-1 text-muted mb-3"></i>
+    <h4 class="fw-bold">Access Denied</h4>
+    <p class="text-muted mb-4">Please login to access this page.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg rounded-3">Login Now</a>
+  </div>
+</div>
 {% endif %}
 {% endblock %}
