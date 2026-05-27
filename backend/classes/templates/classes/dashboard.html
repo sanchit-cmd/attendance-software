@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{ user.name }}!</h1>
+<p>This is your teacher dashboard.</p>
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+<br />
+
+<h2>Subject: {{ subject }}</h2>
+<p>Total Active Enrollments: {{ enrollments.count }}</p>
+
+<br />
+
+<h2>Search Student for Marking Attendance</h2>
+<form action="{% url 'search_student_for_attendance' %}" method="get">
+  <input type="text" name="query" placeholder="Enter student name" required />
+  <button type="submit">Search</button>
+</form>
+
+<br />
+
+<h2>All Enrollments in {{ subject }}</h2>
+{% if enrollments %}
+<div style="display: grid; gap: 15px">
+  {% for enrollment in enrollments %}
+  <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px">
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      "
+    >
+      <div>
+        <strong>Student:</strong>
+        {{ enrollment.student.name }}
+      </div>
+      <div>
+        <strong>Status:</strong>
+        {{ enrollment.status }}
+      </div>
+      <div>
+        <strong>Total Classes:</strong>
+        {{ enrollment.total_classes }}
+      </div>
+    </div>
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      "
+    >
+      <div>
+        <strong>Start Date:</strong>
+        {{ enrollment.start_date }}
+      </div>
+      <div>
+        <strong>End Date:</strong>
+        {{ enrollment.end_date }}
+      </div>
+    </div>
+    <a
+      href="{% url 'mark_attendance' enrollment.id %}"
+      style="
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-block;
+      "
+    >
+      Mark Attendance
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>No enrollments found for this subject.</p>
+{% endif %}
+
+{% else %}
+<p>
+  Please
+  <a href="{% url 'login' %}">login</a>
+  to access your dashboard.
+</p>
+{% endif %}
+{% endblock %}

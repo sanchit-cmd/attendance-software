@@ -17,7 +17,9 @@ Student Dashboard
 <br />
 
 {% for student in students %}
-<div>{{ student.name }}</div>
+<a href="{% url 'student_enrollments' student.id %}">
+  <div>{{ student.name }}</div>
+</a>
 <div>{{ student.date_of_birth }}</div>
 {% endfor %}
 

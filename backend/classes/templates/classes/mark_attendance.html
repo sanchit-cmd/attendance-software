@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Mark Attendance
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{ user.name }}!</h1>
+
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+<br />
+
+<h2>Mark Attendance</h2>
+
+<div
+  style="
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 600px;
+  "
+>
+  <div style="margin-bottom: 15px">
+    <p>
+      <strong>Student:</strong>
+      {{ enrollment.student.name }}
+    </p>
+    <p>
+      <strong>Subject:</strong>
+      {{ enrollment.subject }}
+    </p>
+    <p>
+      <strong>Enrollment Status:</strong>
+      {{ enrollment.status }}
+    </p>
+  </div>
+
+  <form action="{% url 'mark_attendance' enrollment.id %}" method="post">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 15px">
+      <label for="attendance_date"><strong>Attendance Date:</strong></label>
+      <input type="date" id="attendance_date" name="attendance_date" required />
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label for="attendance_batch"><strong>Batch (Time Slot):</strong></label>
+      <select id="attendance_batch" name="attendance_batch" required>
+        <option value="">-- Select Batch --</option>
+        {% for value, label in batch_choices %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="margin-bottom: 15px">
+      <label for="is_present">
+        <input type="checkbox" id="is_present" name="is_present" checked />
+        <strong>Mark as Present</strong>
+      </label>
+    </div>
+
+    <div style="display: flex; gap: 10px">
+      <button
+        type="submit"
+        style="
+          padding: 10px 20px;
+          background-color: #4caf50;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        "
+      >
+        Mark Attendance
+      </button>
+      <a
+        href="{% url 'search_student_for_attendance' %}"
+        style="
+          padding: 10px 20px;
+          background-color: #2196f3;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+          display: inline-block;
+        "
+      >
+        Back to Search
+      </a>
+    </div>
+  </form>
+</div>
+
+{% else %}
+<p>
+  Please
+  <a href="{% url 'login' %}">login</a>
+  to access this page.
+</p>
+{% endif %}
+{% endblock %}

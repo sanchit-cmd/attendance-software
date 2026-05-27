@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Dashboard
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{ user.name }}!</h1>
+<p>This is your student dashboard.</p>
+
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+<br />
+
+<h2>Student Details</h2>
+<div>Name: {{ student.name }}</div>
+<div>Date of Birth: {{ student.date_of_birth }}</div>
+
+<br />
+
+<h2>Active Enrollments</h2>
+{% if active_enrollments %}
+<div style="display: grid; gap: 15px">
+  {% for enrollment in active_enrollments %}
+  <a href="{% url 'enrollment_detail' student.id enrollment.id %}" style="text-decoration: none; color: inherit">
+    <div
+      style="
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      "
+      onmouseover="this.style.backgroundColor = '#f5f5f5'"
+      onmouseout="this.style.backgroundColor = 'white'"
+    >
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          gap: 10px;
+        "
+      >
+        <div>
+          <strong>Subject:</strong>
+          {{ enrollment.subject }}
+        </div>
+        <div>
+          <strong>Start Date:</strong>
+          {{ enrollment.start_date }}
+        </div>
+        <div>
+          <strong>End Date:</strong>
+          {{ enrollment.end_date }}
+        </div>
+        <div>
+          <strong>Total Classes:</strong>
+          {{ enrollment.total_classes }}
+        </div>
+        <div>
+          <strong>Status:</strong>
+          {{ enrollment.status }}
+        </div>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p>No active enrollments.</p>
+{% endif %}
+
+<br />
+<h2>Inactive Enrollments</h2>
+
+{% if inactive_enrollments %}
+<div style="display: grid; gap: 15px">
+  {% for enrollment in inactive_enrollments %}
+  <a href="{% url 'enrollment_detail' student.id enrollment.id %}" style="text-decoration: none; color: inherit">
+    <div
+      style="
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      "
+      onmouseover="this.style.backgroundColor = '#f5f5f5'"
+      onmouseout="this.style.backgroundColor = 'white'"
+    >
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          gap: 10px;
+        "
+      >
+        <div>
+          <strong>Subject:</strong>
+          {{ enrollment.subject }}
+        </div>
+        <div>
+          <strong>Start Date:</strong>
+          {{ enrollment.start_date }}
+        </div>
+        <div>
+          <strong>End Date:</strong>
+          {{ enrollment.end_date }}
+        </div>
+        <div>
+          <strong>Total Classes:</strong>
+          {{ enrollment.total_classes }}
+        </div>
+        <div>
+          <strong>Status:</strong>
+          {{ enrollment.status }}
+        </div>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p>No inactive enrollments.</p>
+{% endif %}
+
+{% else %}
+<p>
+  Please
+  <a href="{% url 'login' %}">login</a>
+  to view your dashboard.
+</p>
+{% endif %}
+{% endblock %}

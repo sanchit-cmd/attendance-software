@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}
+Enrollment Details
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Welcome, {{ user.name }}!</h1>
+
+<form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+<br />
+
+<h2>Enrollment Details</h2>
+<div>
+  <p>
+    <strong>Student:</strong>
+    {{ enrollment.student.name }}
+  </p>
+  <p>
+    <strong>Subject:</strong>
+    {{ enrollment.subject }}
+  </p>
+  <p>
+    <strong>Status:</strong>
+    {{ enrollment.status }}
+  </p>
+  <p>
+    <strong>Start Date:</strong>
+    {{ enrollment.start_date }}
+  </p>
+  <p>
+    <strong>End Date:</strong>
+    {{ enrollment.end_date }}
+  </p>
+  <p>
+    <strong>Total Classes:</strong>
+    {{ enrollment.total_classes }}
+  </p>
+</div>
+
+<br />
+
+<h2>Attendance Records</h2>
+{% if attendance_records %}
+<table border="1">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Batch</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in attendance_records %}
+    <tr>
+      <td>{{ record.attendance_date }}</td>
+      <td>{{ record.attendance_batch }}</td>
+      <td>{% if record.is_present %}Present{% else %}Absent{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No attendance records for this enrollment.</p>
+{% endif %}`
+
+<br />
+
+<a href="{% url 'student_enrollments' enrollment.student.id %}">Back to Enrollments</a>
+
+{% else %}
+<p>
+  Please
+  <a href="{% url 'login' %}">login</a>
+  to view this page.
+</p>
+{% endif %}
+{% endblock %}
