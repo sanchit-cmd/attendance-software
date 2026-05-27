@@ -140,4 +140,94 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Unfold Admin Configuration
 UNFOLD = {
     "THEME": "light",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Students Management",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Students",
+                        "icon": "person",
+                        "link": "/admin/students/student/",
+                    },
+                    {
+                        "title": "Add Student",
+                        "icon": "add",
+                        "link": "/admin/students/student/add/",
+                    },
+                ],
+            },
+            {
+                "title": "Enrollments & Attendance",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Enrollments",
+                        "icon": "assignment",
+                        "link": "/admin/enrollments/enrollment/",
+                    },
+                    {
+                        "title": "Add Enrollment",
+                        "icon": "add",
+                        "link": "/admin/enrollments/enrollment/add/",
+                    },
+                    {
+                        "title": "Attendance",
+                        "icon": "done_all",
+                        "link": "/admin/attendance/attendance/",
+                    },
+                    {
+                        "title": "Add Attendance",
+                        "icon": "add",
+                        "link": "/admin/attendance/attendance/add/",
+                    },
+                ],
+            },
+            {
+                "title": "Classes & Subjects",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Subjects",
+                        "icon": "library_books",
+                        "link": "/admin/classes/subject/",
+                    },
+                    {
+                        "title": "Add Subject",
+                        "icon": "add",
+                        "link": "/admin/classes/subject/add/",
+                    },
+                    {
+                        "title": "Teachers",
+                        "icon": "person_3",
+                        "link": "/admin/classes/teacher/",
+                    },
+                    {
+                        "title": "Add Teacher",
+                        "icon": "add",
+                        "link": "/admin/classes/teacher/add/",
+                    },
+                ],
+            },
+            {
+                "title": "User Management",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Users",
+                        "icon": "people",
+                        "link": "/admin/accounts/user/",
+                    },
+                    {
+                        "title": "Add User",
+                        "icon": "add",
+                        "link": "/admin/accounts/user/add/",
+                    },
+                ],
+            },
+        ],
+    },
 }
