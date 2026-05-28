@@ -1,12 +1,4 @@
-.git
-.gitignore
+fly.toml
+.git/
+*.sqlite3
 .venv
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-env
-venv
-db.sqlite3
-backend/staticfiles

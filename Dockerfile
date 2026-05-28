@@ -1,40 +1,42 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+ARG PYTHON_VERSION=3.12-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+FROM python:${PYTHON_VERSION}
 
-# Set work directory
-RUN mkdir /app
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies (e.g. for psycopg2)
+# install psycopg2 dependencies.
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libpq-dev \
-    curl \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /code
+
+WORKDIR /code
+
 # Install uv for fast dependency resolution
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/usr/local/bin" sh
 
-# Copy the entire project
-COPY . /app/
+# Copy dependency files
+COPY pyproject.toml uv.lock /code/
 
 # Install dependencies using uv
-# --frozen ensures uv.lock is not updated during build
 RUN uv sync --frozen --no-dev
 
-# Collect static files
-# This will use the environment variables from your .env file
-RUN /app/.venv/bin/python backend/manage.py collectstatic --noinput
+# Copy the entire project
+COPY . /code/
 
-# Expose port 
+# Fly might build without secrets, so we provide a dummy SECRET_KEY just for collectstatic
+ENV SECRET_KEY "dummy-secret-for-build"
+# Run collectstatic using the python from uv's virtual environment
+RUN /code/.venv/bin/python backend/manage.py collectstatic --noinput
+
 EXPOSE 8000
 
-# Set the working directory to where manage.py and wsgi.py live
-WORKDIR /app/backend
+# Set working directory to where wsgi.py lives
+WORKDIR /code/backend
 
-# Run gunicorn, binding to the PORT environment variable if it exists, otherwise 8000
-CMD ["sh", "-c", "/app/.venv/bin/gunicorn core.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+# Use gunicorn from uv's virtual environment
+CMD ["/code/.venv/bin/gunicorn","--bind","0.0.0.0:8000","--workers","2","core.wsgi"]
