@@ -17,10 +17,11 @@ def is_teacher(user):
 def dashboard(request):
     context = {}
 
-    if request.method == "POST":
-        pass
-
     teacher = request.user.teacher.first()
+    if not teacher:
+        messages.error(request, "Teacher profile not set up yet. Please contact the administrator.")
+        return render(request, "classes/dashboard.html", context)
+
     subject = teacher.subject
     context["subject"] = subject
 
@@ -33,8 +34,11 @@ def dashboard(request):
 @user_passes_test(is_teacher)
 def search_student_for_attendance(request):
     teacher = request.user.teacher.first()
-    subject = teacher.subject
+    if not teacher:
+        messages.error(request, "Teacher profile not set up yet. Please contact the administrator.")
+        return redirect("dashboard")
 
+    subject = teacher.subject
     context = {
         "subject": subject,
         "search_results": [],
@@ -55,6 +59,10 @@ def search_student_for_attendance(request):
 @user_passes_test(is_teacher)
 def mark_attendance(request, enrollment_id):
     teacher = request.user.teacher.first()
+    if not teacher:
+        messages.error(request, "Teacher profile not set up yet. Please contact the administrator.")
+        return redirect("dashboard")
+
     enrollment = get_object_or_404(
         Enrollment, id=enrollment_id, subject=teacher.subject
     )
@@ -65,21 +73,24 @@ def mark_attendance(request, enrollment_id):
         is_present = request.POST.get("is_present") == "on"
 
         if attendance_date and attendance_batch:
-            attendance, created = Attendance.objects.get_or_create(
-                enrollment=enrollment,
-                attendance_date=attendance_date,
-                attendance_batch=attendance_batch,
-                defaults={"is_present": is_present},
-            )
+            try:
+                attendance, created = Attendance.objects.get_or_create(
+                    enrollment=enrollment,
+                    attendance_date=attendance_date,
+                    attendance_batch=attendance_batch,
+                    defaults={"is_present": is_present},
+                )
 
-            if not created:
-                attendance.is_present = is_present
-                attendance.save()
-                messages.success(request, "Attendance updated successfully.")
-            else:
-                messages.success(request, "Attendance marked successfully.")
+                if not created:
+                    attendance.is_present = is_present
+                    attendance.save()
+                    messages.success(request, "Attendance updated successfully.")
+                else:
+                    messages.success(request, "Attendance marked successfully.")
 
-            return redirect("search_student_for_attendance")
+                return redirect("search_student_for_attendance")
+            except Exception as e:
+                messages.error(request, f"Error saving attendance: {str(e)}")
         else:
             messages.error(request, "Please provide all required fields.")
 

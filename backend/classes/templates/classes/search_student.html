@@ -6,13 +6,13 @@ Search Student - TSM MG
 
 {% block content %}
 {% if user.is_authenticated %}
-<div class="row mb-4 align-items-center">
-  <div class="col-md-8">
-    <h2 class="fw-bold mb-1">Search Student</h2>
-    <p class="text-muted mb-0">Find students in {{ subject }} to mark attendance</p>
+<div class="row mb-3 mb-md-4 align-items-center text-center text-md-start">
+  <div class="col-12 col-md-8 mb-3 mb-md-0">
+    <h2 class="fw-bold mb-1 fs-4 fs-md-2">Search Student</h2>
+    <p class="text-muted mb-0 small small-md-auto">Find students in {{ subject }} to mark attendance</p>
   </div>
-  <div class="col-md-4 mt-3 mt-md-0 text-md-end">
-    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded-3">
+  <div class="col-12 col-md-4 text-center text-md-end">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded-3 w-100 w-md-auto">
       <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
     </a>
   </div>
@@ -23,10 +23,12 @@ Search Student - TSM MG
     <div class="card border-0 shadow-sm rounded-4 p-2 p-md-4">
       <div class="card-body">
         <form action="{% url 'search_student_for_attendance' %}" method="get">
-          <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
-            <span class="input-group-text bg-white border-end-0 text-primary ps-4"><i class="bi bi-search"></i></span>
-            <input type="text" name="query" class="form-control border-start-0 border-end-0 ps-2" placeholder="Search by student name..." value="{{ request.GET.query }}" required autofocus autocomplete="off" />
-            <button type="submit" class="btn btn-primary px-4 px-md-5 fw-bold">Search</button>
+          <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden flex-column flex-md-row">
+            <div class="d-flex flex-grow-1 border-bottom border-md-bottom-0">
+              <span class="input-group-text bg-white border-0 text-primary ps-4"><i class="bi bi-search"></i></span>
+              <input type="text" name="query" class="form-control border-0 ps-2" placeholder="Search by student name..." value="{{ request.GET.query }}" required autofocus autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn-primary px-4 px-md-5 fw-bold w-100 w-md-auto py-3 py-md-0">Search</button>
           </div>
         </form>
       </div>
